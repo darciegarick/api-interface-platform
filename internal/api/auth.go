@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/showmebug/my-gin-demo/internal/common/request"
 	"github.com/showmebug/my-gin-demo/internal/common/response"
 	"github.com/showmebug/my-gin-demo/internal/services"
@@ -33,4 +34,13 @@ func Info(c *gin.Context) {
 		return
 	}
 	response.Success(c, user)
+}
+
+func Logout(c *gin.Context) {
+	err := services.JwtService.JoinBlackList(c.Keys["token"].(*jwt.Token))
+	if err != nil {
+		response.BusinessFail(c, "登出失败")
+		return
+	}
+	response.Success(c, nil)
 }
