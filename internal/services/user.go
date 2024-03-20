@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/showmebug/my-gin-demo/global"
@@ -22,7 +23,14 @@ func (userService *userService) Register(params request.Register) (err error, us
 		err = errors.New("手机号已存在")
 		return
 	}
-	user = repository.User{Name: params.Name, Mobile: params.Mobile, Password: pkg.BcryptMake([]byte(params.Password))}
+	secretKey, err := pkg.GenerateSecureKey() // 生成的Hex字符串长度会是64
+	if err != nil {
+		fmt.Println("Error generating secure secret key:", err)
+		return
+	}
+	user = repository.User{Name: params.Name, Mobile: params.Mobile, Password: pkg.BcryptMake([]byte(params.Password)), AccessKey: pkg.GenerateAccessKey(), SecretKey: secretKey}
+	fmt.Println("!!!!!!!!!!!!!!!", user)
+
 	err = global.App.DB.Create(&user).Error
 	return
 }
