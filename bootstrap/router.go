@@ -26,6 +26,10 @@ func setupRouter() *gin.Engine {
 	// router.Static("/public", "./static")
 	// router.Static("/storage", "./storage/app/public")
 
+	// 注册 openapi 路由
+	openApiGroup := router.Group("/openapi")
+	routes.SetOpenApiGroupRoutes(openApiGroup)
+
 	// 注册 api 分组路由
 	apiGroup := router.Group("/api")
 	routes.SetApiGroupRoutes(apiGroup)

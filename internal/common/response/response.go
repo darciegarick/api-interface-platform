@@ -47,7 +47,12 @@ func BusinessFail(c *gin.Context, msg string) {
 	Fail(c, global.Errors.BusinessError.ErrorCode, msg)
 }
 
-// Token 鉴权失败
+// TokenFail 鉴权失败
 func TokenFail(c *gin.Context) {
 	FailByError(c, global.Errors.TokenError)
+}
+
+// SignatureCertificationEail 签名认证失败
+func SignatureCertificationEail(c *gin.Context) {
+	FailByError(c, global.Errors.SignatureCertificationError)
 }

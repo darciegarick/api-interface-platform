@@ -1,8 +1,11 @@
 package pkg
 
 import (
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -25,4 +28,16 @@ func GenerateSecureKey() (string, error) {
 	// 将随机字节序列编码为十六进制字符串
 	secretKey := hex.EncodeToString(randomBytes)
 	return secretKey, nil
+}
+
+// GenerateSign 根据 用户标识、密钥、随机数、时间戳生成的
+func GenerateSign(accessKey, secretKey, nonce string, timestamp int64) string {
+	// 将参数按照一定规则拼接在一起
+	data := fmt.Sprintf("%s%s%d%s", accessKey, secretKey, timestamp, nonce)
+	// 使用 HMAC-SHA256 算法计算哈希值
+	h := hmac.New(sha256.New, []byte(secretKey))
+	h.Write([]byte(data))
+	signature := hex.EncodeToString(h.Sum(nil))
+	// 返回签名结果
+	return signature
 }
