@@ -27,7 +27,6 @@ func JWTAuth(GuardName string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		claims := token.Claims.(*services.CustomClaims)
 		// Token 发布者校验
 		if claims.Issuer != GuardName {
@@ -35,6 +34,11 @@ func JWTAuth(GuardName string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
+		// token 续签
+
+		// fmt.Println("!!!!!!!!!!!!!", claims.ExpiresAt)
+
 		c.Set("token", token)
 		c.Set("id", claims.ID)
 	}
