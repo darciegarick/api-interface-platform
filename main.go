@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	// 初始化配置
 	bootstrap.InitializeConfig()
 
@@ -31,4 +32,5 @@ func main() {
 
 	// 启动服务器
 	bootstrap.RunServer()
+
 }

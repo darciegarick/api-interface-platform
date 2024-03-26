@@ -29,8 +29,6 @@ func (userService *userService) Register(params request.Register) (err error, us
 		return
 	}
 	user = repository.User{Name: params.Name, Mobile: params.Mobile, Password: pkg.BcryptMake([]byte(params.Password)), AccessKey: pkg.GenerateAccessKey(), SecretKey: secretKey}
-	fmt.Println("!!!!!!!!!!!!!!!", user)
-
 	err = global.App.DB.Create(&user).Error
 	return
 }

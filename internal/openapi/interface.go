@@ -29,10 +29,4 @@ func QueryWeather(c *gin.Context) {
 		Weather: "Sunny",
 	}
 	response.Success(c, data)
-	// jsonData, err := json.Marshal(data)
-	// if err != nil {
-	// 	response.BusinessFail(c, err.Error())
-	// } else {
-	// 	response.Success(c, jsonData)
-	// }
 }

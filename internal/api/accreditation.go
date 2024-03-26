@@ -6,6 +6,8 @@ import (
 	"github.com/showmebug/my-gin-demo/internal/common/response"
 )
 
+// 查询 接口详情
+
 // GetSign 获取接口 的验证签名
 func GetSign(c *gin.Context) {
 	var form request.GetSign
