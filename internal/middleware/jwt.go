@@ -1,6 +1,9 @@
 package middleware
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/showmebug/my-gin-demo/global"
@@ -34,11 +37,23 @@ func JWTAuth(GuardName string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
 		// token 续签
-
-		// fmt.Println("!!!!!!!!!!!!!", claims.ExpiresAt)
-
+		timeDiff := int64(claims.ExpiresAt.Time.Sub(time.Now()).Seconds())
+		if timeDiff < global.App.Config.Jwt.RefreshGracePeriod {
+			lock := global.Lock("refresh_token_lock", global.App.Config.Jwt.JwtBlacklistGracePeriod)
+			if lock.Get() {
+				err, user := services.JwtService.GetUserInfo(GuardName, claims.ID)
+				if err != nil {
+					global.App.Log.Error(err.Error())
+					lock.Release()
+				} else {
+					tokenData, _, _ := services.JwtService.CreateToken(GuardName, user)
+					c.Header("new-token", tokenData.AccessToken)
+					c.Header("new-expires-in", strconv.Itoa(tokenData.ExpiresIn))
+					_ = services.JwtService.JoinBlackList(token)
+				}
+			}
+		}
 		c.Set("token", token)
 		c.Set("id", claims.ID)
 	}
